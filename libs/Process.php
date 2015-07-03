@@ -24,23 +24,19 @@ class Process
      *
      * @type    array
      */
-    private static $processes = array();
-
-    /**
-     * Messaging channel.
-     *
-     * @type    \Octris\Proc\Messaging
-     */
-    protected $messaging;
+    protected $processes = array();
 
     /**
      * Constructor.
-     *
-     * @param   \Octris\Proc\Messaging  $messaging          Messaging channel.
      */
-    protected function __construct(\Octris\Proc\Messaging $messaging)
+    public function __construct()
     {
-        $this->messaging = $messaging;
+        // send SIGTERM to child processes
+        register_shutdown_function(function() {
+            foreach ($this->processes as $pid => $process) {
+                posix_kill($pid, SIGTERM);
+            }
+        });
     }
 
     /**
@@ -49,7 +45,7 @@ class Process
      * @param   string          $class              Class to fork as child process.
      * @return  \Octris\Proc\ProcessController      Instance of controller for child process.
      */
-    public static function fork($class)
+    public function fork($class)
     {
         if (!is_string($class)) {
             throw new \InvalidArgumentException('Parameter is required to be a class name');
@@ -82,7 +78,7 @@ class Process
 
             $controller = new \Octris\Proc\ProcessController($ch2);
 
-            self::$processes[$pid] = $controller;
+            $this->processes[$pid] = $controller;
 
             return $controller;
         }

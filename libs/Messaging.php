@@ -20,6 +20,13 @@ namespace Octris\Proc;
 class Messaging
 {
     /**
+     * Maximum block size to read from socket.
+     *
+     * @type    int
+     */
+    const BLOCK_SIZE = 4096;
+
+    /**
      * Socket handle for receiving messages from process.
      *
      * @type    resource
@@ -64,11 +71,20 @@ class Messaging
     /**
      * Receive message from process.
      *
-     * @return  string                                  Received message.
+     * @return  string|bool                            Received message or false if no message received.
      */
     public function recv()
     {
-        return self::socketRead($this->reader);
+        $sockets = array($this->reader); $null = null;
+        $changed = socket_select($sockets, $null, $null, 0);
+
+        if ($changed === false) {
+            throw new \Octris\Proc\SocketException();
+        } elseif ($changed > 0) {
+            return self::socketRead($this->reader);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -105,14 +121,18 @@ class Messaging
         $msg = '';
 
         do {
-            $read = socket_read($socket, MAXLINE);
+            $chunk = socket_read($socket, self::BLOCK_SIZE);
 
-            if ($read === false) {
-                throw new \Octris\Proc\SocketError();
-            } elseif ($read === '') {
+            if ($chunk === false) {
+                $code = socket_last_error($socket);
+
+                if ($code != 11 && $code != 115) {
+                    throw new \Octris\Proc\SocketException();
+                }
+            } elseif ($chunk === '') {
                 break;
             } else {
-                $msg .= $read;
+                $msg .= $chunk;
             }
         } while(true);
 
@@ -128,6 +148,9 @@ class Messaging
             !socket_create_pair(AF_UNIX, SOCK_STREAM, 0, $sockets_ch2)) {
             throw new \Octris\Proc\SocketException();
         }
+
+        socket_set_nonblock($sockets_ch2[0]);
+        socket_set_nonblock($sockets_ch1[0]);
 
         return array(
             new static($sockets_ch2[0], $sockets_ch1[1]),

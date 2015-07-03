@@ -22,13 +22,22 @@ namespace Octris\Proc;
 abstract class Child extends \Octris\Proc\Process
 {
     /**
+     * Messaging channel.
+     *
+     * @type    \Octris\Proc\Messaging
+     */
+    protected $messaging;
+
+    /**
      * Constructor.
      *
      * @param   \Octris\Proc\Messaging  $messaging          Messaging channel.
      */
-    protected function __construct(\Octris\Proc\Messaging $messaging)
+    public function __construct(\Octris\Proc\Messaging $messaging)
     {
-        parent::__construct($messaging);
+        $this->messaging = $messaging;
+
+        parent::__construct();
 
         // signal handlers
         pcntl_signal(SIGTERM, function() {
