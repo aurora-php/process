@@ -1,0 +1,90 @@
+<?php
+
+/*
+ * This file is part of the 'octris/proc' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Octris\Proc;
+
+/**
+ * Abstract process class.
+ *
+ * @copyright   copyright (c) 2015 by Harald Lapp
+ * @author      Harald Lapp <harald@octris.org>
+ */
+class Process
+{
+    /**
+     * Child processes.
+     *
+     * @type    array
+     */
+    private static $processes = array();
+
+    /**
+     * Messaging channel.
+     *
+     * @type    \Octris\Proc\Messaging
+     */
+    protected $messaging;
+
+    /**
+     * Constructor.
+     *
+     * @param   \Octris\Proc\Messaging  $messaging          Messaging channel.
+     */
+    protected function __construct(\Octris\Proc\Messaging $messaging)
+    {
+        $this->messaging = $messaging;
+    }
+
+    /**
+     * Fork process.
+     *
+     * @param   string          $class              Class to fork as child process.
+     * @return  \Octris\Proc\ProcessController      Instance of controller for child process.
+     */
+    public static function fork($class)
+    {
+        if (!is_string($class)) {
+            throw new \InvalidArgumentException('Parameter is required to be a class name');
+        } elseif (!class_exists($class)) {
+            throw new \InvalidArgumentException('Parameter is required to be a name of an existing class');
+        } elseif (!is_subclass_of($class, '\Octris\Proc\Child')) {
+            throw new \InvalidArgumentException('Parameter is required to be a subclass of "\Octris\Proc\Child"');
+        }
+
+        // create communication channels
+        list($ch1, $ch2) = \Octris\Proc\Messaging::create();
+
+        // fork process
+        $pid = pcntl_fork();
+
+        if ($pid < 0) {
+            throw new \Octris\Proc\ProcessException();
+        }
+
+        if (!$pid) {
+            // child process
+            unset($ch2);
+
+            $child = new $class($ch1);
+            $child->run();
+            exit;
+        } else {
+            // parent process
+            unset($ch1);
+
+            $controller = new \Octris\Proc\ProcessController($ch2);
+
+            self::$processes[$pid] = $controller;
+
+            return $controller;
+        }
+    }
+}
