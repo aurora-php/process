@@ -95,6 +95,7 @@ class Messaging
      */
     protected function socketWrite($socket, $msg)
     {
+        $msg .= "\x00";         // add termination character
         $len = strlen($msg);
 
         do {
@@ -122,7 +123,6 @@ class Messaging
 
         do {
             $chunk = socket_read($socket, self::BLOCK_SIZE);
-            var_dump($chunk);
 
             if ($chunk === false) {
                 $code = socket_last_error($socket);
@@ -130,16 +130,10 @@ class Messaging
                 if ($code != 11 && $code != 115) {
                     throw new \Octris\Proc\SocketException();
                 }
-            } elseif ($chunk === '') {
-                break;
             } else {
-                $msg .= $chunk;
-
-                if (strlen($chunk) < self::BLOCK_SIZE) {
-                    break;
-                }
+                $msg .= rtrim($chunk, "\x00");
             }
-        } while(true);
+        } while(substr($chunk, -1) !== "\x00");
 
         return $msg;
     }
