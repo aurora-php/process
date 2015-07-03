@@ -65,7 +65,7 @@ class Messaging
      */
     public function send($msg)
     {
-        self::socketWrite($this->writer, $msg);
+        $this->socketWrite($this->writer, $msg);
     }
 
     /**
@@ -81,7 +81,7 @@ class Messaging
         if ($changed === false) {
             throw new \Octris\Proc\SocketException();
         } elseif ($changed > 0) {
-            return self::socketRead($this->reader);
+            return $this->socketRead($this->reader);
         } else {
             return false;
         }
@@ -93,7 +93,7 @@ class Messaging
      * @param   resource            $socket             Socket to write to.
      * @param   string              $msg                Message to write.
      */
-    protected static function socketWrite($socket, $msg)
+    protected function socketWrite($socket, $msg)
     {
         $len = strlen($msg);
 
@@ -116,12 +116,13 @@ class Messaging
      *
      * @param   resource            $socket             Socket to read from.
      */
-    protected static function socketRead($socket)
+    protected function socketRead($socket)
     {
         $msg = '';
 
         do {
             $chunk = socket_read($socket, self::BLOCK_SIZE);
+            var_dump($chunk);
 
             if ($chunk === false) {
                 $code = socket_last_error($socket);
@@ -133,6 +134,10 @@ class Messaging
                 break;
             } else {
                 $msg .= $chunk;
+
+                if (strlen($chunk) < self::BLOCK_SIZE) {
+                    break;
+                }
             }
         } while(true);
 

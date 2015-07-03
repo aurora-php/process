@@ -10,11 +10,11 @@ require_once('../libs/SocketException.php');
 
 class worker extends \Octris\Proc\Child {
     function run() {
-        print "child\n";
-
         while (true) {
+            print "child\n";
+
             if (($msg = $this->messaging->recv()) !== false) {
-                print trim($msg) . "\n";
+                $this->messaging->send(strrev($msg));
             }
 
             sleep(1);
@@ -22,7 +22,27 @@ class worker extends \Octris\Proc\Child {
     }
 }
 
-$main = new \Octris\Proc\Process();
+class main extends \Octris\Proc\Process {
+    function run() {
+        $child = $this->fork('worker');
 
-$child = $main->fork('worker');
-$child->send('Test');
+        $cnt = 1;
+
+        while ($cnt < 4) {
+            $child->send('Test #' . $cnt);
+
+            do {
+                if (($msg = $child->recv()) !== false) {
+                    print trim($msg) . "\n";
+                    sleep(1);
+                    break;
+                }
+            } while(true);
+
+            ++$cnt;
+        }
+    }
+}
+
+$main = new main();
+$main->run();

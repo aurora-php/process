@@ -44,9 +44,4 @@ abstract class Child extends \Octris\Proc\Process
             exit;
         });
     }
-
-    /**
-     * Run child process.
-     */
-    abstract public function run();
 }

@@ -17,7 +17,7 @@ namespace Octris\Proc;
  * @copyright   copyright (c) 2015 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-class Process
+abstract class Process
 {
     /**
      * Child processes.
@@ -83,4 +83,9 @@ class Process
             return $controller;
         }
     }
+
+    /**
+     * Run process.
+     */
+    abstract public function run();
 }
