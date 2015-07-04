@@ -9,25 +9,25 @@
  * file that was distributed with this source code.
  */
 
-namespace Octris\Proc;
+namespace Octris\Process;
 
 /**
- * Socket exception class.
+ * Process exception class.
  *
  * @copyright   copyright (c) 2015 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-class SocketException extends \Exception
+class ProcessException extends \Exception
 {
     /**
      * Constructor. If the parameters are omitted the error will be detected by the
-     * internal socket error functions.
+     * internal pcntl error functions.
      */
     public function __construct($message = '', $code = 0, \Exception $previous = NULL)
     {
         if ($code === 0) {
-            $code = socket_last_error();
-            $message = socket_strerror($code);
+            $code = pcntl_get_last_error();
+            $message = pcntl_strerror($code);
         }
 
         parent::__construct($message, $code, $previous);

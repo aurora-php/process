@@ -11,7 +11,7 @@
 
 declare(ticks=1);
 
-namespace Octris\Proc;
+namespace Octris\Process;
 
 /**
  * Abstract child process class.
@@ -19,7 +19,7 @@ namespace Octris\Proc;
  * @copyright   copyright (c) 2015 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-abstract class Child extends \Octris\Proc\Process
+abstract class Child extends \Octris\Process
 {
     /**
      * Messaging channel.
@@ -33,7 +33,7 @@ abstract class Child extends \Octris\Proc\Process
      *
      * @param   \Octris\Proc\Messaging  $messaging          Messaging channel.
      */
-    public function __construct(\Octris\Proc\Messaging $messaging)
+    public function __construct(\Octris\Process\Messaging $messaging)
     {
         $this->messaging = $messaging;
 
@@ -44,4 +44,9 @@ abstract class Child extends \Octris\Proc\Process
             exit;
         });
     }
+
+    /**
+     * Run process.
+     */
+    abstract public function run();
 }

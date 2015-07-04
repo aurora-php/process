@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Octris\Proc;
+namespace Octris\Process;
 
 /**
  * Process controller.
@@ -17,19 +17,19 @@ namespace Octris\Proc;
  * @copyright   copyright (c) 2015 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-class ProcessController
+class Controller
 {
     /**
      * Messaging channel.
      *
-     * @type    \Octris\Proc\Messaging
+     * @type    \Octris\Process\Messaging
      */
     protected $messaging;
 
     /**
      * Constructor.
      */
-    public function __construct(\Octris\Proc\Messaging $messaging)
+    public function __construct(\Octris\Process\Messaging $messaging)
     {
         $this->messaging = $messaging;
     }
