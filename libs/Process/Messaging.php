@@ -12,7 +12,9 @@
 namespace Octris\Process;
 
 /**
- * Class for handling IPC between processes.
+ * Class for handling IPC between processes. The communication is handled using
+ * socket streams and the data is transferred json encoded using binary mode with
+ * null-byte termination.
  *
  * @copyright   copyright (c) 2015 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
@@ -25,6 +27,23 @@ class Messaging
      * @type    int
      */
     const BLOCK_SIZE = 4096;
+
+    /**
+     * Error types.
+     *
+     * @type    array
+     */
+    private static $errors = array(
+        JSON_ERROR_NONE => 'No error',
+        JSON_ERROR_DEPTH => 'The maximum stack depth has been exceeded',
+        JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON',
+        JSON_ERROR_CTRL_CHAR => 'Control character error, possibly incorrectly encoded',
+        JSON_ERROR_SYNTAX => 'Syntax error',
+        JSON_ERROR_UTF8 => 'Malformed UTF-8 characters, possibly incorrectly encoded',
+        JSON_ERROR_RECURSION => 'One or more recursive references in the value to be encoded',
+        JSON_ERROR_INF_OR_NAN => 'One or more NAN or INF values in the value to be encoded',
+        JSON_ERROR_UNSUPPORTED_TYPE => 'A value of a type that cannot be encoded was given'
+    );
 
     /**
      * Socket handle for receiving messages from process.
@@ -91,11 +110,11 @@ class Messaging
      * Write to socket.
      *
      * @param   resource            $socket             Socket to write to.
-     * @param   string              $msg                Message to write.
+     * @param   mixed               $msg                Message to write.
      */
     protected function socketWrite($socket, $msg)
     {
-        $msg .= "\x00";         // add termination character
+        $msg = json_encode($msg) . "\x00";          // add termination character
         $len = strlen($msg);
 
         do {
@@ -116,6 +135,7 @@ class Messaging
      * Read from socket.
      *
      * @param   resource            $socket             Socket to read from.
+     * @return  mixed                                   Read value.
      */
     protected function socketRead($socket)
     {
@@ -134,6 +154,19 @@ class Messaging
                 $msg .= rtrim($chunk, "\x00");
             }
         } while(substr($chunk, -1) !== "\x00");
+
+        $msg = json_decode($msg, true);
+
+        if (is_null($msg) && ($code = json_last_error()) !== JSON_ERROR_NONE) {
+            // unable to unserialize message
+            if (isset(self::$errors[$code])) {
+                $message = self::$errors[$code];
+            } else {
+                $message = 'Unknown error';
+            }
+
+            throw new \Octris\Process\MessagingException($message, $code);
+        }
 
         return $msg;
     }
