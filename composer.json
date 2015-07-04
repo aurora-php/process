@@ -1,13 +1,15 @@
 {
     "name":         "octris/process",
     "type":         "library",
-    "description":  "",
+    "description":  "Octris process handling library",
     "keywords":     [],
-    "license":      "",
+    "homepage":     "http://github.com/octris/process/",
+    "license":      "BSD-3-Clause",
 
     "authors":      [{
         "name":         "Harald Lapp",
-        "email":        "harald@octris.org"
+        "email":        "harald@octris.org",
+        "homepage":     "http://www.octris.org/"
     }],
 
     "require":      {
