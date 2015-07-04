@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Octris\Proc;
+namespace Octris;
 
 /**
  * Abstract process class.
@@ -17,7 +17,7 @@ namespace Octris\Proc;
  * @copyright   copyright (c) 2015 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-abstract class Process
+class Process
 {
     /**
      * Child processes.
@@ -51,18 +51,18 @@ abstract class Process
             throw new \InvalidArgumentException('Parameter is required to be a class name');
         } elseif (!class_exists($class)) {
             throw new \InvalidArgumentException('Parameter is required to be a name of an existing class');
-        } elseif (!is_subclass_of($class, '\Octris\Proc\Child')) {
+        } elseif (!is_subclass_of($class, '\Octris\Process\Child')) {
             throw new \InvalidArgumentException('Parameter is required to be a subclass of "\Octris\Proc\Child"');
         }
 
         // create communication channels
-        list($ch1, $ch2) = \Octris\Proc\Messaging::create();
+        list($ch1, $ch2) = \Octris\Process\Messaging::create();
 
         // fork process
         $pid = pcntl_fork();
 
         if ($pid < 0) {
-            throw new \Octris\Proc\ProcessException();
+            throw new \Octris\Process\ProcessException();
         }
 
         if (!$pid) {
@@ -76,16 +76,11 @@ abstract class Process
             // parent process
             unset($ch1);
 
-            $controller = new \Octris\Proc\ProcessController($ch2);
+            $controller = new \Octris\Process\Controller($ch2);
 
             $this->processes[$pid] = $controller;
 
             return $controller;
         }
     }
-
-    /**
-     * Run process.
-     */
-    abstract public function run();
 }
