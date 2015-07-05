@@ -87,7 +87,7 @@ class Process
         } elseif (!class_exists($class)) {
             throw new \InvalidArgumentException('Parameter is required to be a name of an existing class');
         } elseif (!is_subclass_of($class, '\Octris\Process\Child')) {
-            throw new \InvalidArgumentException('Parameter is required to be a subclass of "\Octris\Proc\Child"');
+            throw new \InvalidArgumentException('Parameter is required to be a subclass of "\Octris\Process\Child"');
         }
 
         // create communication channels
