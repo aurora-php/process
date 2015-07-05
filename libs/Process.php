@@ -59,6 +59,20 @@ class Process
 
         // make process the session leader
         posix_setsid();
+        usleep(100000);
+
+        // fork again as session leader
+        $pid = pcntl_fork();
+
+        if ($pid < 0) {
+            throw new \Octris\Process\ProcessException();
+        }
+
+        if ($pid) {
+            // end process, but make sure to not send SIGHUP to any already forked processes
+            $this->processes = array();
+            exit(0);
+        }
     }
 
     /**
