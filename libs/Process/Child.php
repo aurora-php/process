@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-declare(ticks=1);
-
 namespace Octris\Process;
 
 /**
@@ -38,11 +36,6 @@ abstract class Child extends \Octris\Process
         $this->messaging = $messaging;
 
         parent::__construct();
-
-        // signal handlers
-        pcntl_signal(SIGTERM, function() {
-            exit;
-        });
     }
 
     /**
