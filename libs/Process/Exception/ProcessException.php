@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Octris\Process;
+namespace Octris\Process\Exception;
 
 /**
  * Process exception class.

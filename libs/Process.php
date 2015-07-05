@@ -47,7 +47,7 @@ class Process
         $pid = pcntl_fork();
 
         if ($pid < 0) {
-            throw new \Octris\Process\ProcessException();
+            throw new \Octris\Process\Exception\ProcessException();
         }
 
         if ($pid) {
@@ -64,7 +64,7 @@ class Process
         $pid = pcntl_fork();
 
         if ($pid < 0) {
-            throw new \Octris\Process\ProcessException();
+            throw new \Octris\Process\Exception\ProcessException();
         }
 
         if ($pid) {
@@ -97,7 +97,7 @@ class Process
         $pid = pcntl_fork();
 
         if ($pid < 0) {
-            throw new \Octris\Process\ProcessException();
+            throw new \Octris\Process\Exception\ProcessException();
         }
 
         if (!$pid) {

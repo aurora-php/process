@@ -98,7 +98,7 @@ class Messaging
         $changed = socket_select($sockets, $null, $null, 0);
 
         if ($changed === false) {
-            throw new \Octris\Process\SocketException();
+            throw new \Octris\Process\Exception\SocketException();
         } elseif ($changed > 0) {
             return $this->socketRead($this->reader);
         } else {
@@ -121,7 +121,7 @@ class Messaging
             $sent = socket_write($socket, $msg, $len);
 
             if ($sent === false) {
-                throw new \Octris\Process\SocketException();
+                throw new \Octris\Process\Exception\SocketException();
             } elseif ($sent < $len) {
                 $msg = substr($msg, $sent);
                 $len -= $sent;
@@ -148,7 +148,7 @@ class Messaging
                 $code = socket_last_error($socket);
 
                 if ($code != 11 && $code != 115) {
-                    throw new \Octris\Process\SocketException();
+                    throw new \Octris\Process\Exception\SocketException();
                 }
             } else {
                 $msg .= rtrim($chunk, "\x00");
@@ -165,7 +165,7 @@ class Messaging
                 $message = 'Unknown error';
             }
 
-            throw new \Octris\Process\MessagingException($message, $code);
+            throw new \Octris\Process\Exception\MessagingException($message, $code);
         }
 
         return $msg;
@@ -178,7 +178,7 @@ class Messaging
     {
         if (!socket_create_pair(AF_UNIX, SOCK_STREAM, 0, $sockets_ch1) ||
             !socket_create_pair(AF_UNIX, SOCK_STREAM, 0, $sockets_ch2)) {
-            throw new \Octris\Process\SocketException();
+            throw new \Octris\Process\Exception\SocketException();
         }
 
         socket_set_nonblock($sockets_ch2[0]);
