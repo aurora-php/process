@@ -40,6 +40,28 @@ class Process
     }
 
     /**
+     * Detach process from terminal to daemonize it.
+     */
+    public function detach()
+    {
+        // fork process
+        $pid = pcntl_fork();
+
+        if ($pid < 0) {
+            throw new \Octris\Process\ProcessException();
+        }
+
+        if ($pid) {
+            // end process, but make sure to not send SIGHUP to any already forked processes
+            $this->processes = array();
+            exit(0);
+        }
+
+        // make process the session leader
+        posix_setsid();
+    }
+
+    /**
      * Fork process.
      *
      * @param   string          $class              Class to fork as child process.
