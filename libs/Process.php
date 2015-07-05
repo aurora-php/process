@@ -34,7 +34,7 @@ class Process
         // send SIGTERM to child processes
         register_shutdown_function(function() {
             foreach ($this->processes as $pid => $process) {
-                posix_kill($pid, SIGTERM);
+                posix_kill($pid, SIGHUP);
             }
         });
     }
