@@ -39,7 +39,7 @@ class Process
     }
 
     /**
-     * Detach process from terminal to daemonize it.
+     * Detach process -- for example to daemonize it.
      */
     public function detach()
     {
