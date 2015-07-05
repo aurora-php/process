@@ -5,7 +5,14 @@ require_once('../vendor/autoload.php');
 
 class worker extends \Octris\Process\Child {
     function run() {
+        \Octris\Process\Signal::addHandler(SIGTERM, function() {
+            print "child exit\n";
+            exit;
+        });
+
         while (true) {
+            \Octris\Process\Signal::dispatch();
+
             if (($msg = $this->messaging->recv()) !== false) {
                 $this->messaging->send(strrev($msg));
             }
