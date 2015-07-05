@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-declare(ticks=100);
-
 namespace Octris;
 
 /**
@@ -39,19 +37,6 @@ class Process
                 posix_kill($pid, SIGTERM);
             }
         });
-
-        // signal handlers
-        pcntl_signal(SIGTERM, function() {
-            exit;
-        });
-    }
-
-    /**
-     * Calls handlers of pending signals.
-     */
-    public function dispatchSignals()
-    {
-        pcntl_signal_dispatch();
     }
 
     /**
