@@ -111,7 +111,7 @@ class Process
             // parent process
             unset($ch1);
 
-            $controller = new \Octris\Process\Controller($ch2);
+            $controller = new \Octris\Process\Controller($ch2, $pid);
 
             $this->processes[$pid] = $controller;
 
