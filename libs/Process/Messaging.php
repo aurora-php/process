@@ -29,23 +29,6 @@ class Messaging
     const BLOCK_SIZE = 4096;
 
     /**
-     * Error types.
-     *
-     * @type    array
-     */
-    private static $errors = array(
-        JSON_ERROR_NONE => 'No error',
-        JSON_ERROR_DEPTH => 'The maximum stack depth has been exceeded',
-        JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON',
-        JSON_ERROR_CTRL_CHAR => 'Control character error, possibly incorrectly encoded',
-        JSON_ERROR_SYNTAX => 'Syntax error',
-        JSON_ERROR_UTF8 => 'Malformed UTF-8 characters, possibly incorrectly encoded',
-        JSON_ERROR_RECURSION => 'One or more recursive references in the value to be encoded',
-        JSON_ERROR_INF_OR_NAN => 'One or more NAN or INF values in the value to be encoded',
-        JSON_ERROR_UNSUPPORTED_TYPE => 'A value of a type that cannot be encoded was given'
-    );
-
-    /**
      * Socket handle for receiving messages from process.
      *
      * @type    resource
@@ -155,20 +138,14 @@ class Messaging
             }
         } while(substr($chunk, -1) !== "\x00");
 
-        $msg = json_decode($msg, true);
+        $data = json_decode($msg, true);
 
-        if (is_null($msg) && ($code = json_last_error()) !== JSON_ERROR_NONE) {
+        if (($code = json_last_error()) !== JSON_ERROR_NONE) {
             // unable to unserialize message
-            if (isset(self::$errors[$code])) {
-                $message = self::$errors[$code];
-            } else {
-                $message = 'Unknown error';
-            }
-
-            throw new \Octris\Process\Exception\MessagingException($message, $code);
+            throw new \Octris\Process\Exception\MessagingException(json_last_error_msg(), $code);
         }
 
-        return $msg;
+        return $data;
     }
 
     /**
