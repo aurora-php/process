@@ -158,9 +158,6 @@ class Messaging
             throw new \Octris\Process\Exception\SocketException();
         }
 
-        socket_set_nonblock($sockets_ch2[0]);
-        socket_set_nonblock($sockets_ch1[0]);
-
         return array(
             new static($sockets_ch2[0], $sockets_ch1[1]),
             new static($sockets_ch1[0], $sockets_ch2[1])
