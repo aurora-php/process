@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the 'octris/proc' package.
+ * This file is part of the 'octris/process' package.
  *
  * (c) Harald Lapp <harald@octris.org>
  *
@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Octris\Process\Exception;
+namespace Octris\Process;
 
 /**
- * Socket exception class.
+ * Exception marker interface.
  *
  * @copyright   copyright (c) 2015 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-class MessagingException extends \Exception implements \Octris\Process\IException
+interface IException
 {
 }
