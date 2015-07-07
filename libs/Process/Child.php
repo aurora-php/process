@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the 'octris/proc' package.
+ * This file is part of the 'octris/process' package.
  *
  * (c) Harald Lapp <harald@octris.org>
  *
