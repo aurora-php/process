@@ -36,6 +36,10 @@ class Process
                 posix_kill($pid, SIGHUP);
             }
         });
+
+        \Octris\Process\Signal::addHandler(SIGCHLD, function () {
+            while (($pid = pcntl_waitpid(-1, $status, WNOHANG)) > 0) {}
+        });
     }
 
     /**
