@@ -11,12 +11,13 @@
 
 namespace Octris\Process;
 
-declare(ticks=100);
+// activate async signal handling
+pcntl_async_signals(true);
 
 /**
  * Signal handling library.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-2017 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 class Signal
@@ -45,14 +46,6 @@ class Signal
                 $handler();
             }
         }
-    }
-
-    /**
-     * Calls handlers of pending signals.
-     */
-    public static function dispatch()
-    {
-        pcntl_signal_dispatch();
     }
 
     /**
