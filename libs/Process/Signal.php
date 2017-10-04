@@ -56,8 +56,8 @@ class Signal
         if (!isset(self::$handlers[$signal])) {
             self::$handlers[$signal] = array();
 
-            pcntl_signal($signal, function() use ($signal) {
-                self::sigHandler($signal);
+            pcntl_signal($signal, function ($signo) {
+                self::sigHandler($signo);
             });
         }
 
