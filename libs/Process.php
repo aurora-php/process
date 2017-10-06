@@ -43,6 +43,16 @@ class Process
     }
 
     /**
+     * Set title of process. Note that this does currently not seem to work on macOS.
+     *
+     * @param   string          $title              process title.
+     */
+    public function setProcessTitle($title)
+    {
+        @cli_set_process_title($title);
+    }
+
+    /**
      * Detach process -- for example to daemonize it.
      */
     public function detach()
