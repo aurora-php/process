@@ -14,9 +14,9 @@ namespace Octris\Process;
 /**
  * Exception marker interface.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-present by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-interface IException
+interface ExceptionInterface
 {
 }

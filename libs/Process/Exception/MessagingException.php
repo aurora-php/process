@@ -14,9 +14,9 @@ namespace Octris\Process\Exception;
 /**
  * Socket exception class.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-present by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-class MessagingException extends \Exception implements \Octris\Process\IException
+class MessagingException extends \Exception implements \Octris\Process\ExceptionInterface
 {
 }

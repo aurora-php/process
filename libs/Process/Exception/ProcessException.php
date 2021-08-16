@@ -14,10 +14,10 @@ namespace Octris\Process\Exception;
 /**
  * Process exception class.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-present by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
-class ProcessException extends \Exception implements \Octris\Process\IException
+class ProcessException extends \Exception implements \Octris\Process\ExceptionInterface
 {
     /**
      * Constructor. If the parameters are omitted the error will be detected by the
