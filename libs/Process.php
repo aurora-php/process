@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the 'octris/process' package.
  *
@@ -14,7 +16,7 @@ namespace Octris;
 /**
  * Abstract process class.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-present by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 class Process
@@ -24,7 +26,7 @@ class Process
      *
      * @type    array
      */
-    protected $processes = array();
+    protected array $processes = [];
 
     /**
      * Constructor.
@@ -47,7 +49,7 @@ class Process
      *
      * @param   string          $title              process title.
      */
-    public function setProcessTitle($title)
+    public function setProcessTitle(string $title): void
     {
         @cli_set_process_title($title);
     }
@@ -55,7 +57,7 @@ class Process
     /**
      * Detach process -- for example to daemonize it.
      */
-    public function detach()
+    public function detach(): void
     {
         // fork process
         $pid = pcntl_fork();
@@ -92,13 +94,11 @@ class Process
      * Fork process.
      *
      * @param   string          $class              Class to fork as child process.
-     * @return  \Octris\Proc\ProcessController      Instance of controller for child process.
+     * @return  \Octris\Process\Controller          Instance of controller for child process.
      */
-    public function fork($class)
+    public function fork(string $class): \Octris\Process\Controller
     {
-        if (!is_string($class)) {
-            throw new \InvalidArgumentException('Parameter is required to be a class name');
-        } elseif (!class_exists($class)) {
+        if (!class_exists($class)) {
             throw new \InvalidArgumentException('Parameter is required to be a name of an existing class');
         } elseif (!is_subclass_of($class, '\Octris\Process\Child')) {
             throw new \InvalidArgumentException('Parameter is required to be a subclass of "\Octris\Process\Child"');

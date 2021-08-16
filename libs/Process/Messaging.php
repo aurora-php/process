@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the 'octris/process' package.
  *
@@ -16,7 +18,7 @@ namespace Octris\Process;
  * socket streams and the data is transferred json encoded using binary mode with
  * null-byte termination.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-present by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 class Messaging
@@ -65,7 +67,7 @@ class Messaging
      *
      * @param   string              $msg                Message to write.
      */
-    public function send($msg)
+    public function send(string $msg): void
     {
         $this->socketWrite($this->writer, $msg);
     }
@@ -75,7 +77,7 @@ class Messaging
      *
      * @return  string|bool                            Received message or false if no message received.
      */
-    public function recv()
+    public function recv(): string|bool
     {
         $sockets = array($this->reader); $null = null;
         $changed = socket_select($sockets, $null, $null, 0);
@@ -95,7 +97,7 @@ class Messaging
      * @param   resource            $socket             Socket to write to.
      * @param   mixed               $msg                Message to write.
      */
-    protected function socketWrite($socket, $msg)
+    protected function socketWrite($socket, string $msg): void
     {
         $msg = json_encode($msg) . "\x00";          // add termination character
         $len = strlen($msg);
@@ -120,7 +122,7 @@ class Messaging
      * @param   resource            $socket             Socket to read from.
      * @return  mixed                                   Read value.
      */
-    protected function socketRead($socket)
+    protected function socketRead($socket): mixed
     {
         $msg = '';
 
@@ -151,7 +153,7 @@ class Messaging
     /**
      * Create pair of channels.
      */
-    public static function create()
+    public static function create(): array
     {
         if (!socket_create_pair(AF_UNIX, SOCK_STREAM, 0, $sockets_ch1) ||
             !socket_create_pair(AF_UNIX, SOCK_STREAM, 0, $sockets_ch2)) {

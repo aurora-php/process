@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the 'octris/process' package.
  *
@@ -14,43 +16,27 @@ namespace Octris\Process;
 /**
  * Process controller.
  *
- * @copyright   copyright (c) 2015 by Harald Lapp
+ * @copyright   copyright (c) 2015-present by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 class Controller
 {
-    /**
-     * Messaging channel.
-     *
-     * @type    \Octris\Process\Messaging
-     */
-    protected $messaging;
-
-    /**
-     * Process ID to be controlled.
-     *
-     * @type    int
-     */
-    protected $pid;
-
     /**
      * Constructor.
      * 
      * @param   \Octris\Process\Messaging   $messaging  Instance of messaging service.
      * @param   int                         $pid        Process ID the controller belongs to.
      */
-    public function __construct(\Octris\Process\Messaging $messaging, $pid)
+    public function __construct(protected \Octris\Process\Messaging $messaging, protected int $pid)
     {
-        $this->messaging = $messaging;
-        $this->pid = $pid;
     }
 
     /**
      * Test if the process is alive.
      * 
-     * @param   bool                                    Returns true if the child process is still running.
+     * @return   bool                                   Returns true if the child process is still running.
      */
-    public function isAlive()
+    public function isAlive(): bool
     {
         $result = pcntl_waitpid($this->pid, $status, WNOHANG);
         
@@ -62,7 +48,7 @@ class Controller
      * 
      * @return  int                                     Process ID.
      */
-    public function getPid()
+    public function getPid(): int
     {
         return $this->pid;
     }
@@ -73,7 +59,7 @@ class Controller
      * 
      * @param   int                         $signal     Signal to send.
      */
-    public function kill($signal)
+    public function kill(int $signal): void
     {
         posix_kill($this->pid, $signal);
     }
@@ -83,7 +69,7 @@ class Controller
      *
      * @param   string              $msg                Message to write.
      */
-    public function send($msg)
+    public function send(string $msg): void
     {
         $this->messaging->send($msg);
     }
@@ -93,7 +79,7 @@ class Controller
      *
      * @return  string                                  Received message.
      */
-    public function recv()
+    public function recv(): string
     {
         return $this->messaging->recv();
     }

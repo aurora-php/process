@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the 'octris/process' package.
  *
@@ -17,7 +19,7 @@ pcntl_async_signals(true);
 /**
  * Signal handling library.
  *
- * @copyright   copyright (c) 2015-2017 by Harald Lapp
+ * @copyright   copyright (c) 2015-present by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 class Signal
@@ -27,7 +29,7 @@ class Signal
      *
      * @type    array
      */
-    protected static $handlers = array();
+    protected static array $handlers = [];
 
     /*
      * Static class.
@@ -39,7 +41,7 @@ class Signal
      *
      * @param   int             $signal                 Signal to call handlers for.
      */
-    protected static function sigHandler($signal)
+    protected static function sigHandler(int $signal): void
     {
         if (isset(self::$handlers[$signal])) {
             foreach (self::$handlers[$signal] as $handler) {
@@ -50,8 +52,11 @@ class Signal
 
     /**
      * Add an event handler for a signal.
+     *
+     * @param   int             $signal                 Signal to add handler for.
+     * @param   callable        $cb                     Signal handler.
      */
-    public static function addHandler($signal, callable $cb)
+    public static function addHandler(int $signal, callable $cb)
     {
         if (!isset(self::$handlers[$signal])) {
             self::$handlers[$signal] = array();
