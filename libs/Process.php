@@ -120,7 +120,7 @@ class Process
 
             $child = new $class($ch1);
             $child->run();
-            exit;
+            pcntl_exec('/bin/sh', [ '-c', 'true' ]);
         } else {
             // parent process
             unset($ch1);
