@@ -39,8 +39,10 @@ class Process
             }
         });
 
-        \Octris\Process\Signal::addHandler(SIGCHLD, function () {
-            while (($pid = pcntl_waitpid(-1, $status, WNOHANG)) > 0) {}
+        \Octris\Process\Signal::addHandler(SIGCHLD, function ($signal) {
+            while (($pid = pcntl_waitpid(-1, $status, WNOHANG)) > 0) {
+                unset($this->processes[$pid]);
+            }
         });
     }
 
@@ -120,16 +122,19 @@ class Process
 
             $child = new $class($ch1);
             $child->run();
-            pcntl_exec('/bin/sh', [ '-c', 'true' ]);
-        } else {
-            // parent process
+
             unset($ch1);
 
-            $controller = new \Octris\Process\Controller($ch2, $pid);
-
-            $this->processes[$pid] = $controller;
-
-            return $controller;
+            pcntl_exec('/bin/sh', [ '-c', 'true' ]);
         }
+
+        // parent process
+        unset($ch1);
+
+        $controller = new \Octris\Process\Controller($ch2, $pid);
+
+        $this->processes[$pid] = $controller;
+
+        return $controller;
     }
 }
