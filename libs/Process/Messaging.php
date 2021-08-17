@@ -129,7 +129,6 @@ class Messaging
         do {
             //$chunk = socket_read($socket, self::BLOCK_SIZE);
             $bytes = socket_recv($socket, $chunk, self::BLOCK_SIZE, MSG_DONTWAIT);
-            print $bytes;
 
             if ($bytes === false) {
                 $code = socket_last_error($socket);
