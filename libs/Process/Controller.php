@@ -67,9 +67,9 @@ class Controller
     /**
      * Send message to process.
      *
-     * @param   string              $msg                Message to write.
+     * @param   mixed               $msg                Message to write.
      */
-    public function send(string $msg): void
+    public function send(mixed $msg): void
     {
         $this->messaging->send($msg);
     }
@@ -77,9 +77,9 @@ class Controller
     /**
      * Receive message from process.
      *
-     * @return  string                                  Received message.
+     * @return  mixed                                   Received message.
      */
-    public function recv(): string
+    public function recv(): mixed
     {
         return $this->messaging->recv();
     }

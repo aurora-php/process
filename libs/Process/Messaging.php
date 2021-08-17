@@ -65,9 +65,9 @@ class Messaging
     /**
      * Send message to process.
      *
-     * @param   string              $msg                Message to write.
+     * @param   mixed               $msg                Message to write.
      */
-    public function send(string $msg): void
+    public function send(mixed $msg): void
     {
         $this->socketWrite($this->writer, $msg);
     }
@@ -75,9 +75,9 @@ class Messaging
     /**
      * Receive message from process.
      *
-     * @return  string|bool                            Received message or false if no message received.
+     * @return  mixed                              Received message or false if no message received.
      */
-    public function recv(): string|bool
+    public function recv(): mixed
     {
         $sockets = array($this->reader); $null = null;
         $changed = socket_select($sockets, $null, $null, 0);
@@ -97,7 +97,7 @@ class Messaging
      * @param   resource            $socket             Socket to write to.
      * @param   mixed               $msg                Message to write.
      */
-    protected function socketWrite($socket, string $msg): void
+    protected function socketWrite($socket, mixed $msg): void
     {
         $msg = json_encode($msg) . "\x00";          // add termination character
         $len = strlen($msg);
