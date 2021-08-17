@@ -127,24 +127,30 @@ class Messaging
         $msg = '';
 
         do {
-            $chunk = socket_read($socket, self::BLOCK_SIZE);
+            //$chunk = socket_read($socket, self::BLOCK_SIZE);
+            $bytes = socket_recv($socket, $chunk, self::BLOCK_SIZE, MSG_DONTWAIT);
+            print $bytes;
 
-            if ($chunk === false) {
+            if ($bytes === false) {
                 $code = socket_last_error($socket);
 
                 if ($code != 11 && $code != 115) {
                     throw new \Octris\Process\Exception\SocketException();
                 }
-            } else {
+            } elseif ($bytes > 0) {
                 $msg .= rtrim($chunk, "\x00");
             }
-        } while(substr($chunk, -1) !== "\x00");
+        } while($bytes > 0 && substr($chunk, -1) !== "\x00");
 
-        $data = json_decode($msg, true);
+        if ($msg !== '') {
+            $data = json_decode($msg, true);
 
-        if (($code = json_last_error()) !== JSON_ERROR_NONE) {
-            // unable to unserialize message
-            throw new \Octris\Process\Exception\MessagingException(json_last_error_msg(), $code);
+            if (($code = json_last_error()) !== JSON_ERROR_NONE) {
+                // unable to unserialize message
+                throw new \Octris\Process\Exception\MessagingException(json_last_error_msg(), $code);
+            }
+        } else {
+            $data = false;
         }
 
         return $data;
