@@ -45,7 +45,7 @@ class Signal
     {
         if (isset(self::$handlers[$signal])) {
             foreach (self::$handlers[$signal] as $handler) {
-                $handler();
+                $handler($signal);
             }
         }
     }
