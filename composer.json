@@ -15,7 +15,9 @@
     "require":      {
         "php": ">=8.0",
         "ext-pcntl":  "*",
-        "ext-posix": "*"
+        "ext-posix": "*",
+
+        "psr/container": "^1.0"
     },
 
     "autoload":     {

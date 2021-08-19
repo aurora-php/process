@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Octris;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Abstract process class.
  *
@@ -96,13 +98,14 @@ class Process
      * Fork process.
      *
      * @param   string          $class              Class to fork as child process.
+     * @param   ?ContainerInterface    $container
      * @return  \Octris\Process\Controller          Instance of controller for child process.
      */
-    public function fork(string $class): \Octris\Process\Controller
+    public function fork(string $class, ?ContainerInterface $container = null): \Octris\Process\Controller
     {
         if (!class_exists($class)) {
             throw new \InvalidArgumentException('Parameter is required to be a name of an existing class');
-        } elseif (!is_subclass_of($class, '\Octris\Process\Child')) {
+        } elseif (!is_subclass_of($class, \Octris\Process\Child::class)) {
             throw new \InvalidArgumentException('Parameter is required to be a subclass of "\Octris\Process\Child"');
         }
 
@@ -120,7 +123,7 @@ class Process
             // child process
             unset($ch2);
 
-            $child = new $class($ch1);
+            $child = new $class($ch1, $container);
             $child->run();
 
             unset($ch1);

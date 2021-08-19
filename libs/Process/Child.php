@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Octris\Process;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Abstract child process class.
  *
@@ -25,8 +27,9 @@ abstract class Child extends \Octris\Process
      * Constructor.
      *
      * @param   \Octris\Process\Messaging  $messaging          Messaging channel.
+     * @param   ?ContainerInterface        $container
      */
-    public function __construct(protected \Octris\Process\Messaging $messaging)
+    public function __construct(protected \Octris\Process\Messaging $messaging, protected ?ContainerInterface $container = null)
     {
         parent::__construct();
     }
